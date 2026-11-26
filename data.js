@@ -1,4 +1,4 @@
-import { renderProductDataURL } from './textures.js';
+export const IMG_DIR = './img/';
 
 export const CATEGORY_LABELS = {
   clothing: 'Clothing',
@@ -7,315 +7,270 @@ export const CATEGORY_LABELS = {
   shoes: 'Shoes'
 };
 
-const RAW_PRODUCTS = [
-  /* ───────── CLOTHING (10 garments on the brass rail) ───────── */
-  {
-    id: 'g1',
-    cat: 'clothing',
-    shape: 'hoodie',
-    color: '#233d31',
-    title: 'Heavyweight Hoodie',
-    kind: '480gsm organic fleece',
-    price: 98,
-    swatches: [
-      { label: 'Forest', hex: '#233d31', price: 98 },
-      { label: 'Bone', hex: '#e7e1d5', price: 98 },
-      { label: 'Burgundy', hex: '#5c1e28', price: 103, outSizes: ['XL'] }
-    ],
-    sizes: ['XS', 'S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g2',
-    cat: 'clothing',
-    shape: 'hoodie',
-    color: '#e5dfd3',
-    title: 'Bone Hoodie',
-    kind: 'Brushed organic cotton',
-    price: 98,
-    sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    outSizes: ['XS']
-  },
-  {
-    id: 'g3',
-    cat: 'clothing',
-    shape: 'puffer',
-    color: '#243142',
-    title: 'Navy Puffer',
-    kind: 'Recycled down fill',
-    price: 215,
-    compareAt: 260,
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g4',
-    cat: 'clothing',
-    shape: 'overshirt',
-    color: '#232426',
-    title: 'Black Overshirt',
-    kind: 'Heavyweight wool twill',
-    price: 165,
-    sizes: ['XS', 'S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g5',
-    cat: 'clothing',
-    shape: 'sherpa',
-    color: '#efeae0',
-    title: 'Sherpa Jacket',
-    kind: 'Cream fleece / leather pocket',
-    price: 185,
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g6',
-    cat: 'clothing',
-    shape: 'cardigan',
-    color: '#e7decb',
-    accent: '#6e4c2e',
-    title: 'Cable Cardigan',
-    kind: 'Merino wool knit',
-    price: 148,
-    sizes: ['XS', 'S', 'M', 'L']
-  },
-  {
-    id: 'g7',
-    cat: 'clothing',
-    shape: 'vest',
-    color: '#1e2022',
-    title: 'Puffer Vest',
-    kind: 'Matte ripstop shell',
-    price: 135,
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g8',
-    cat: 'clothing',
-    shape: 'overshirt',
-    color: '#8f9e81',
-    title: 'Sage Linen Shirt',
-    kind: 'Washed Belgian linen',
-    price: 112,
-    sizes: ['XS', 'S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g9',
-    cat: 'clothing',
-    shape: 'overshirt',
-    color: '#41668f',
-    title: 'Denim Trucker',
-    kind: '14oz selvedge denim',
-    price: 175,
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 'g10',
-    cat: 'clothing',
-    shape: 'overcoat',
-    color: '#a87544',
-    accent: '#3b2412',
-    title: 'Camel Overcoat',
-    kind: 'Double-faced wool blend',
-    price: 340,
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-
-  /* ───────── CAPS (6 items on the left pegboard wall) ───────── */
-  {
-    id: 'c1',
-    cat: 'caps',
-    shape: 'cap',
-    color: '#22334a',
-    title: 'Navy Cap',
-    kind: 'Navy cotton twill',
-    price: 34,
-    single: true
-  },
-  {
-    id: 'c2',
-    cat: 'caps',
-    shape: 'cap',
-    color: '#8e2d32',
-    title: 'Red Cap',
-    kind: 'Washed crimson twill',
-    price: 34,
-    single: true
-  },
-  {
-    id: 'c3',
-    cat: 'caps',
-    shape: 'cap',
-    color: '#e4ddd0',
-    title: 'Bone Cap',
-    kind: 'Unbleached canvas',
-    price: 36,
-    single: true
-  },
-  {
-    id: 'c4',
-    cat: 'caps',
-    shape: 'cap',
-    color: '#2b4737',
-    title: 'Forest Cap',
-    kind: 'Brushed heavy cotton',
-    price: 36,
-    single: true
-  },
-  {
-    id: 'c5',
-    cat: 'caps',
-    shape: 'bucket',
-    color: '#202124',
-    title: 'Black Bucket Hat',
-    kind: 'Water-repellent nylon',
-    price: 42,
-    single: true
-  },
-  {
-    id: 'c6',
-    cat: 'caps',
-    shape: 'cap',
-    color: '#634632',
-    title: 'Corduroy Cap',
-    kind: 'Wide-wale espresso cord',
-    price: 38,
-    single: true
-  },
-
-  /* ───────── BAGS (4 items on floating oak shelves) ───────── */
-  {
-    id: 'b1',
-    cat: 'bags',
-    shape: 'backpack',
-    color: '#1f2124',
-    title: 'Day Pack',
-    kind: 'Black ballistic nylon',
-    price: 89,
-    single: true,
-    plans: [
-      { id: 'once', name: 'One-time purchase' },
-      { id: 'monthly', name: 'Care kit every month · save 10%' },
-      { id: 'quarterly', name: 'Care kit every 3 months · save 5%' }
-    ]
-  },
-  {
-    id: 'b2',
-    cat: 'bags',
-    shape: 'tote',
-    color: '#dfd5c3',
-    title: 'Canvas Tote',
-    kind: 'Heavyweight 18oz duck',
-    price: 54,
-    single: true
-  },
-  {
-    id: 'b3',
-    cat: 'bags',
-    shape: 'sling',
-    color: '#2b4436',
-    title: 'Forest Sling',
-    kind: 'Weatherproof ripstop',
-    price: 68,
-    single: true
-  },
-  {
-    id: 'b4',
-    cat: 'bags',
-    shape: 'duffel',
-    color: '#7c5638',
-    title: 'Weekend Duffel',
-    kind: 'Full-grain leather trim',
-    price: 145,
-    compareAt: 175,
-    single: true
-  },
-
-  /* ───────── SHOES (6 items on the dark recessed shoe niche) ───────── */
-  {
-    id: 's1',
-    cat: 'shoes',
-    shape: 'sneaker',
-    color: '#ece8e0',
-    accent: '#c79b68',
-    title: 'Court Sneaker',
-    kind: 'White leather / gum',
-    price: 118,
-    sizes: ['40', '41', '42', '43', '44', '45'],
-    outSizes: ['45']
-  },
-  {
-    id: 's2',
-    cat: 'shoes',
-    shape: 'sneaker',
-    color: '#5d6b7a',
-    accent: '#edeae4',
-    title: 'Pulse Runner',
-    kind: 'Mesh & suede overlay',
-    price: 132,
-    sizes: ['40', '41', '42', '43', '44', '45']
-  },
-  {
-    id: 's3',
-    cat: 'shoes',
-    shape: 'high',
-    color: '#2a2c2e',
-    accent: '#e5dfd3',
-    title: 'Court High',
-    kind: 'Tumbled calfskin',
-    price: 145,
-    sizes: ['40', '41', '42', '43', '44']
-  },
-  {
-    id: 's4',
-    cat: 'shoes',
-    shape: 'sneaker',
-    color: '#b82e5a',
-    accent: '#c89b65',
-    title: 'Retro Runner',
-    kind: 'Berry suede / gum sole',
-    price: 128,
-    sizes: ['40', '41', '42', '43', '44', '45']
-  },
-  {
-    id: 's5',
-    cat: 'shoes',
-    shape: 'sneaker',
-    color: '#e6e0d4',
-    accent: '#f5f2ec',
-    title: 'Bone Court',
-    kind: 'Bone leather low-top',
-    price: 118,
-    sizes: ['40', '41', '42', '43', '44']
-  },
-  {
-    id: 's6',
-    cat: 'shoes',
-    shape: 'loafer',
-    color: '#1b1a19',
-    accent: '#2c241d',
-    title: 'Penny Loafer',
-    kind: 'Hand-sewn black leather',
-    price: 168,
-    sizes: ['40', '41', '42', '43', '44', '45'],
-    outSizes: ['40']
-  }
-];
-
 export function buildProducts() {
-  return RAW_PRODUCTS.map((p) => {
-    const baseImg = renderProductDataURL(p);
-    const swatches = p.swatches
-      ? p.swatches.map((sw) => ({
-          ...sw,
-          image: renderProductDataURL({ ...p, color: sw.hex })
-        }))
-      : null;
+  return [
+    /* ───────── CLOTHING (10 garments on the brass rail) ───────── */
+    {
+      id: 'g1',
+      cat: 'clothing',
+      title: 'Heavyweight Hoodie',
+      kind: '480gsm organic fleece',
+      image: `${IMG_DIR}g1-front.webp`,
+      price: 98,
+      swatches: [
+        { label: 'Forest', hex: '#233d31', image: `${IMG_DIR}g1-front.webp`, price: 98 },
+        { label: 'Bone', hex: '#e7e1d5', image: `${IMG_DIR}g2-front.webp`, price: 98 },
+        { label: 'Burgundy', hex: '#5c1e28', image: `${IMG_DIR}g15-front.webp`, price: 103, outSizes: ['XL'] }
+      ],
+      sizes: ['XS', 'S', 'M', 'L', 'XL'],
+      gallery: [
+        `${IMG_DIR}g1-front.webp`,
+        `${IMG_DIR}g2-front.webp`,
+        `${IMG_DIR}g15-front.webp`,
+        `${IMG_DIR}poster-1.webp`,
+        `${IMG_DIR}poster-2.webp`
+      ]
+    },
+    {
+      id: 'g2',
+      cat: 'clothing',
+      title: 'Bone Hoodie',
+      kind: 'Brushed organic cotton',
+      image: `${IMG_DIR}g2-front.webp`,
+      price: 98,
+      sizes: ['XS', 'S', 'M', 'L', 'XL'],
+      outSizes: ['XS']
+    },
+    {
+      id: 'g3',
+      cat: 'clothing',
+      title: 'Navy Puffer',
+      kind: 'Recycled down fill',
+      image: `${IMG_DIR}g3-front.webp`,
+      price: 215,
+      compareAt: 260,
+      sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g4',
+      cat: 'clothing',
+      title: 'Black Overshirt',
+      kind: 'Heavyweight wool twill',
+      image: `${IMG_DIR}g8-front.webp`,
+      price: 165,
+      sizes: ['XS', 'S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g5',
+      cat: 'clothing',
+      title: 'Sherpa Jacket',
+      kind: 'Cream fleece / leather pocket',
+      image: `${IMG_DIR}g9-front.webp`,
+      price: 185,
+      sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g6',
+      cat: 'clothing',
+      title: 'Cable Cardigan',
+      kind: 'Merino wool knit',
+      image: `${IMG_DIR}g10-front.webp`,
+      price: 148,
+      sizes: ['XS', 'S', 'M', 'L']
+    },
+    {
+      id: 'g7',
+      cat: 'clothing',
+      title: 'Puffer Vest',
+      kind: 'Matte ripstop shell',
+      image: `${IMG_DIR}g12-front.webp`,
+      price: 135,
+      sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g8',
+      cat: 'clothing',
+      title: 'Sage Linen Shirt',
+      kind: 'Washed Belgian linen',
+      image: `${IMG_DIR}g13-front.webp`,
+      price: 112,
+      sizes: ['XS', 'S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g9',
+      cat: 'clothing',
+      title: 'Denim Trucker',
+      kind: '14oz selvedge denim',
+      image: `${IMG_DIR}g16-front.webp`,
+      price: 175,
+      sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+      id: 'g10',
+      cat: 'clothing',
+      title: 'Camel Overcoat',
+      kind: 'Double-faced wool blend',
+      image: `${IMG_DIR}g19-front.webp`,
+      price: 340,
+      sizes: ['S', 'M', 'L', 'XL']
+    },
 
-    const gallery = swatches ? swatches.map((sw) => sw.image) : [baseImg];
-    return {
-      ...p,
-      image: baseImg,
-      swatches,
-      gallery
-    };
-  });
+    /* ───────── CAPS (6 items on the left pegboard wall) ───────── */
+    {
+      id: 'c1',
+      cat: 'caps',
+      title: 'Navy Cap',
+      kind: 'Navy cotton twill',
+      image: `${IMG_DIR}cap-1.webp`,
+      price: 34,
+      single: true
+    },
+    {
+      id: 'c2',
+      cat: 'caps',
+      title: 'Red Cap',
+      kind: 'Washed crimson twill',
+      image: `${IMG_DIR}cap-2.webp`,
+      price: 34,
+      single: true
+    },
+    {
+      id: 'c3',
+      cat: 'caps',
+      title: 'Bone Cap',
+      kind: 'Unbleached canvas',
+      image: `${IMG_DIR}cap-3.webp`,
+      price: 36,
+      single: true
+    },
+    {
+      id: 'c4',
+      cat: 'caps',
+      title: 'Forest Cap',
+      kind: 'Brushed heavy cotton',
+      image: `${IMG_DIR}cap-4.webp`,
+      price: 36,
+      single: true
+    },
+    {
+      id: 'c5',
+      cat: 'caps',
+      title: 'Black Bucket Hat',
+      kind: 'Water-repellent nylon',
+      image: `${IMG_DIR}cap-5.webp`,
+      price: 42,
+      single: true
+    },
+    {
+      id: 'c6',
+      cat: 'caps',
+      title: 'Corduroy Cap',
+      kind: 'Wide-wale espresso cord',
+      image: `${IMG_DIR}cap-6.webp`,
+      price: 38,
+      single: true
+    },
+
+    /* ───────── BAGS (4 items on floating oak shelves) ───────── */
+    {
+      id: 'b1',
+      cat: 'bags',
+      title: 'Day Pack',
+      kind: 'Black ballistic nylon',
+      image: `${IMG_DIR}bag-4.webp`,
+      price: 89,
+      single: true,
+      plans: [
+        { id: 'once', name: 'One-time purchase' },
+        { id: 'monthly', name: 'Care kit every month · save 10%' },
+        { id: 'quarterly', name: 'Care kit every 3 months · save 5%' }
+      ]
+    },
+    {
+      id: 'b2',
+      cat: 'bags',
+      title: 'Canvas Tote',
+      kind: 'Heavyweight 18oz duck',
+      image: `${IMG_DIR}bag-5.webp`,
+      price: 54,
+      single: true
+    },
+    {
+      id: 'b3',
+      cat: 'bags',
+      title: 'Forest Sling',
+      kind: 'Weatherproof ripstop',
+      image: `${IMG_DIR}bag-6.webp`,
+      price: 68,
+      single: true
+    },
+    {
+      id: 'b4',
+      cat: 'bags',
+      title: 'Weekend Duffel',
+      kind: 'Full-grain leather trim',
+      image: `${IMG_DIR}bag-7.webp`,
+      price: 145,
+      compareAt: 175,
+      single: true
+    },
+
+    /* ───────── SHOES (6 items on the dark recessed shoe niche) ───────── */
+    {
+      id: 's1',
+      cat: 'shoes',
+      title: 'Court Sneaker',
+      kind: 'White leather / gum',
+      image: `${IMG_DIR}shoe-1.webp`,
+      price: 118,
+      sizes: ['40', '41', '42', '43', '44', '45'],
+      outSizes: ['45']
+    },
+    {
+      id: 's2',
+      cat: 'shoes',
+      title: 'Pulse Runner',
+      kind: 'Mesh & suede overlay',
+      image: `${IMG_DIR}shoe-2.webp`,
+      price: 132,
+      sizes: ['40', '41', '42', '43', '44', '45']
+    },
+    {
+      id: 's3',
+      cat: 'shoes',
+      title: 'Court High',
+      kind: 'Tumbled calfskin',
+      image: `${IMG_DIR}shoe-3.webp`,
+      price: 145,
+      sizes: ['40', '41', '42', '43', '44']
+    },
+    {
+      id: 's4',
+      cat: 'shoes',
+      title: 'Retro Runner',
+      kind: 'Berry suede / gum sole',
+      image: `${IMG_DIR}shoe-5.webp`,
+      price: 128,
+      sizes: ['40', '41', '42', '43', '44', '45']
+    },
+    {
+      id: 's5',
+      cat: 'shoes',
+      title: 'Bone Court',
+      kind: 'Bone leather low-top',
+      image: `${IMG_DIR}shoe-10.webp`,
+      price: 118,
+      sizes: ['40', '41', '42', '43', '44']
+    },
+    {
+      id: 's6',
+      cat: 'shoes',
+      title: 'Penny Loafer',
+      kind: 'Hand-sewn black leather',
+      image: `${IMG_DIR}shoe-12.webp`,
+      price: 168,
+      sizes: ['40', '41', '42', '43', '44', '45'],
+      outSizes: ['40']
+    }
+  ];
 }

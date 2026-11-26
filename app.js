@@ -1,6 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js';
-import { buildProducts, CATEGORY_LABELS } from './data.js';
-import { renderEditorialPosterCanvas } from './textures.js';
+import { buildProducts, CATEGORY_LABELS, IMG_DIR } from './data.js';
 
 const ROOM = { x: 4.6, z0: -4.6, z1: 4.2, h: 3.9 };
 const RAIL = { y: 2.02, z: -4.22, gap: 0.62 };
@@ -724,31 +723,22 @@ class VitrineStore {
 
   buildPosters() {
     const posterConfigs = [
-      {
-        title: 'Vol. 02',
-        subtitle: 'Autumn / Winter Edit',
-        palette: { bg: '#ede6da', block: '#26342d', accent: '#bc9f7c' },
-        pos: [ROOM.x - 0.04, 1.85, 2.05],
-        rotY: -Math.PI / 2
-      },
-      {
-        title: 'Vitrine',
-        subtitle: 'Atelier Collection',
-        palette: { bg: '#e5ddd0', block: '#8f6b47', accent: '#26342d' },
-        pos: [0, 1.85, ROOM.z1 - 0.04],
-        rotY: Math.PI
-      }
+      { url: `${IMG_DIR}poster-1.webp`, pos: [ROOM.x - 0.04, 1.85, 2.05], rotY: -Math.PI / 2 },
+      { url: `${IMG_DIR}poster-2.webp`, pos: [0, 1.85, ROOM.z1 - 0.04], rotY: Math.PI }
     ];
 
     posterConfigs.forEach((cfg) => {
-      const canvas = renderEditorialPosterCanvas(cfg.title, cfg.subtitle, cfg.palette);
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.72 });
+      const mat = new THREE.MeshStandardMaterial({ color: '#ddd5c8', roughness: 0.7 });
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 1.55), mat);
       plane.position.set(...cfg.pos);
       plane.rotation.y = cfg.rotY;
       this.scene.add(plane);
+
+      this.loadProductTexture(cfg.url, (tex) => {
+        mat.map = tex;
+        mat.color.set('#ffffff');
+        mat.needsUpdate = true;
+      });
     });
   }
 
