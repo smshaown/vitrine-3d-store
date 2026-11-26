@@ -1,0 +1,1096 @@
+/* ==========================================================================
+   Vitrine 3D Virtual Store — Design Tokens & UI Layer Styles
+   ========================================================================== */
+
+:root {
+  --vs-ink: #111111;
+  --vs-wall: #e8e1d6;
+  --vs-floor: #a89e91;
+  --vs-wood: #bc9f7c;
+  --vs-feature: #26342d;
+  --vs-metal: #b8955a;
+  --vs-glow: #ffd49a;
+  --vs-logo-ink: #efe5cf;
+  --vs-ok: #2f9e4f;
+  --vs-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --vs-logo: "Archivo", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #141210;
+  color: var(--vs-ink);
+  font-family: var(--vs-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   Store Stage Container
+   ========================================================================== */
+
+.vs {
+  position: relative;
+  display: block;
+  height: 100svh;
+  min-height: 540px;
+  overflow: hidden;
+  background: var(--vs-wall);
+  color: var(--vs-ink);
+  isolation: isolate;
+}
+
+.vs [hidden] {
+  display: none !important;
+}
+
+.vs button {
+  font: inherit;
+  color: inherit;
+}
+
+.vs p,
+.vs h2 {
+  margin: 0;
+}
+
+.vs-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.vs.is-ready .vs-canvas {
+  opacity: 1;
+}
+
+.vs.is-drag .vs-canvas {
+  cursor: grabbing;
+}
+
+.vs.is-point .vs-canvas {
+  cursor: pointer;
+}
+
+/* Vignette + Subtle Film Grain */
+.vs-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% 45%,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(20, 14, 8, 0.34) 100%
+  );
+}
+
+.vs-vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Loading Indicator */
+.vs-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  transition: opacity 0.6s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vs.is-ready .vs-loading {
+  opacity: 0;
+}
+
+/* ==========================================================================
+   Top Masthead & Bag Counter
+   ========================================================================== */
+
+.vs-mast {
+  position: absolute;
+  left: 50%;
+  top: clamp(14px, 2.6svh, 26px);
+  transform: translateX(-50%);
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+  color: #ffffff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.38);
+}
+
+.vs-mast b {
+  display: block;
+  font: italic 900 clamp(15px, 1.4vw, 19px) / 1 var(--vs-logo);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.vs-mast span {
+  display: block;
+  margin-top: 4px;
+  font-size: 8.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.vs-bag-btn {
+  position: absolute;
+  right: clamp(14px, 2.5vw, 28px);
+  top: clamp(14px, 2.4svh, 24px);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  color: var(--vs-ink);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+  transition: transform 0.2s ease, background-color 0.2s;
+}
+
+.vs-bag-btn:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+}
+
+.vs-bag-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.vs-landed {
+  animation: vs-landed 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes vs-landed {
+  40% {
+    transform: scale(1.25);
+  }
+}
+
+/* ==========================================================================
+   Bottom Glass Menu, Hint & Floating Hover Caption
+   ========================================================================== */
+
+.vs-menu {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(16px, 3.2svh, 30px);
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  max-width: calc(100% - 24px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border-radius: 999px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04), 0 10px 30px rgba(20, 20, 20, 0.14);
+  transition: opacity 0.3s;
+}
+
+.vs-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.vs-menu button {
+  flex: none;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(17, 17, 17, 0.72);
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.vs-menu button:hover {
+  color: var(--vs-ink);
+}
+
+.vs-menu button[aria-current="true"] {
+  background: var(--vs-ink);
+  color: #ffffff;
+}
+
+.vs-menu button:focus-visible,
+.vs-bag-btn:focus-visible,
+.vs-panel button:focus-visible,
+.vs-zb:focus-visible {
+  outline: 2px solid var(--vs-ink);
+  outline-offset: 2px;
+}
+
+.vs-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(clamp(16px, 3.2svh, 30px) + 54px);
+  z-index: 3;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.86);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  transition: opacity 0.45s;
+}
+
+.vs:not(.is-store) .vs-hint {
+  opacity: 0;
+}
+
+.vs-caption {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  translate: -50% 0;
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(17, 17, 17, 0.74);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  will-change: transform;
+}
+
+.vs-caption b {
+  font-weight: 600;
+  color: var(--vs-ink);
+}
+
+.vs-caption.is-on {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Frosted Glass Product Panel (.vs-panel)
+   ========================================================================== */
+
+.vs-panel {
+  position: absolute;
+  right: clamp(16px, 4vw, 64px);
+  top: 50%;
+  z-index: 7;
+  width: min(360px, calc(100% - 32px));
+  transform: translate(24px, -50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 22px 22px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.82) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 24px 60px rgba(20, 20, 20, 0.16);
+}
+
+.vs.is-product .vs-panel {
+  opacity: 1;
+  transform: translate(0, -50%);
+  pointer-events: auto;
+}
+
+.vs-grab {
+  display: none;
+}
+
+.vs-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -6px -6px 12px 0;
+}
+
+.vs-pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.06);
+}
+
+.vs-pager button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.vs-pager button:hover {
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vs-pager span {
+  min-width: 44px;
+  text-align: center;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: rgba(17, 17, 17, 0.7);
+}
+
+.vs-x {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(17, 17, 17, 0.07);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vs-x:hover {
+  background: rgba(17, 17, 17, 0.14);
+}
+
+.vs-pi {
+  display: grid;
+  gap: 4px;
+}
+
+.vs-cat {
+  font-size: 11px;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.vs-name {
+  font-size: 19px;
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.vs-name:focus {
+  outline: none;
+}
+
+.vs-price {
+  margin-top: 6px !important;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.vs-price s {
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.vs-colour {
+  font-size: 11.5px;
+  color: rgba(17, 17, 17, 0.68);
+}
+
+.vs-more {
+  justify-self: start;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.72);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vs-more:hover {
+  color: var(--vs-ink);
+}
+
+/* Gallery Thumbnails */
+.vs-gal {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.vs-gal::-webkit-scrollbar {
+  display: none;
+}
+
+.vs-gal:empty {
+  display: none;
+}
+
+.vs-th {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 56px;
+  padding: 2px;
+  border: 1px solid rgba(17, 17, 17, 0.14);
+  border-radius: 8px;
+  background: #f4f1ec;
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: border-color 0.2s;
+}
+
+.vs-th img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.vs-th.is-on {
+  border-color: var(--vs-ink);
+  box-shadow: 0 0 0 1px var(--vs-ink) inset;
+}
+
+/* Variant Options */
+.vs-opt {
+  margin-top: 14px;
+}
+
+.vs-opt-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.vs-opt-top b {
+  font-weight: 400;
+  color: rgba(17, 17, 17, 0.68);
+}
+
+.vs-vals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.vs-vals button {
+  height: 38px;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  font-size: 12.5px;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.vs-vals button:hover {
+  border-color: rgba(17, 17, 17, 0.5);
+}
+
+.vs-vals button.is-on {
+  background: var(--vs-ink);
+  color: #ffffff;
+  border-color: var(--vs-ink);
+}
+
+.vs-vals button.is-out {
+  color: rgba(17, 17, 17, 0.35);
+  text-decoration: line-through;
+}
+
+/* Circular Color Swatches */
+.vs-vals.is-sw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vs-vals.is-sw button {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  background: var(--sw, #ddd) center / cover;
+  box-shadow: 0 0 0 2px #ffffff inset;
+}
+
+.vs-vals.is-sw button.is-on {
+  border-color: var(--vs-ink);
+  box-shadow: 0 0 0 2px #ffffff inset, 0 0 0 1.5px var(--vs-ink);
+}
+
+.vs-vals.is-sw button.is-out {
+  text-decoration: none;
+  opacity: 0.6;
+}
+
+.vs-vals.is-sw button.is-out::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  bottom: 3px;
+  width: 1.5px;
+  background: rgba(17, 17, 17, 0.65);
+  transform: rotate(45deg);
+}
+
+/* Subscription Selling Plan */
+.vs-plan {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vs-plan select {
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(17, 17, 17, 0.16);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.78);
+  font: 12.5px var(--vs-sans);
+  color: var(--vs-ink);
+}
+
+/* Quantity Stepper & Add CTA */
+.vs-qty {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vs-step {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(17, 17, 17, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.vs-step button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.vs-step input {
+  width: 36px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font: 600 13px var(--vs-sans);
+  color: var(--vs-ink);
+  -moz-appearance: textfield;
+}
+
+.vs-step input::-webkit-inner-spin-button,
+.vs-step input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.vs .vs-add {
+  position: relative;
+  width: 100%;
+  height: 46px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--vs-ink);
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: background-color 0.3s, transform 0.15s, opacity 0.2s;
+}
+
+.vs .vs-add:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+.vs .vs-add:disabled {
+  background: rgba(17, 17, 17, 0.3);
+  cursor: not-allowed;
+}
+
+.vs .vs-add.is-done {
+  background: var(--vs-ok);
+}
+
+.vs .vs-add.is-busy {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.vs-view {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.72);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.vs-view.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.vs-view:hover {
+  color: var(--vs-ink);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Full-Screen Zoom Lightbox (.vs-zoom)
+   ========================================================================== */
+
+.vs-zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(18, 18, 16, 0.92);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.vs-zoom img {
+  width: auto;
+  height: auto;
+  max-width: min(88%, 860px);
+  max-height: 80%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.vs-zb {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--vs-ink);
+  cursor: pointer;
+}
+
+.vs-zx {
+  top: 16px;
+  right: 16px;
+}
+
+.vs-zp {
+  left: 16px;
+  top: 50%;
+  margin-top: -22px;
+}
+
+.vs-zn {
+  right: 16px;
+  top: 50%;
+  margin-top: -22px;
+}
+
+.vs-zc {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Fly-to-Cart Sprite */
+.vs-fly {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.25));
+}
+
+/* ==========================================================================
+   Keyboard List, Toast & WebGL2 Fallback Flat Grid
+   ========================================================================== */
+
+.vs-list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.vs-list:focus-within {
+  left: 14px;
+  top: 64px;
+  z-index: 9;
+  width: 220px;
+  max-height: 60svh;
+  overflow-y: auto;
+  height: auto;
+  clip-path: none;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.vs-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.vs-list button:hover,
+.vs-list button:focus-visible {
+  background: rgba(17, 17, 17, 0.08);
+}
+
+.vs-toast {
+  position: absolute;
+  left: 50%;
+  top: 68px;
+  z-index: 8;
+  transform: translateX(-50%);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.vs-toast p {
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--vs-ink);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  white-space: nowrap;
+}
+
+/* Fallback 2D Flat Grid (No WebGL2) */
+.vs-flat {
+  display: none;
+}
+
+.vs.is-flat {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  padding: clamp(64px, 8vw, 96px) clamp(16px, 4vw, 48px) clamp(32px, 5vw, 64px);
+}
+
+.vs.is-flat > :not(.vs-flat):not(.vs-mast):not(.vs-toast):not(.vs-bag-btn) {
+  display: none !important;
+}
+
+.vs.is-flat .vs-flat {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(46%, 200px), 1fr));
+  gap: clamp(12px, 2vw, 24px);
+}
+
+.vs.is-flat .vs-mast {
+  top: 22px;
+  color: var(--vs-ink);
+  text-shadow: none;
+}
+
+.vs-card {
+  display: grid;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.vs-card-pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.vs-card-pic img {
+  position: absolute;
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.vs-card-name {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vs-card-price {
+  font-size: 13px;
+  opacity: 0.72;
+}
+
+/* Demo Footer */
+.demo-bar {
+  background: #141210;
+  color: rgba(255, 255, 255, 0.82);
+  text-align: center;
+  padding: 16px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.demo-bar p {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Mobile Pull-Down Sheet Layout (<= 760px)
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .vs-panel {
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 12px;
+    width: auto;
+    transform: translateY(30px);
+    padding: 8px 14px 14px;
+    border-radius: 20px;
+    background: rgba(252, 251, 249, 0.96);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    max-height: 72%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .vs.is-product .vs-panel {
+    transform: none;
+  }
+
+  .vs.is-product .vs-menu {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .vs-grab {
+    display: block;
+    width: 36px;
+    height: 4px;
+    margin: 0 auto 6px;
+    border-radius: 4px;
+    background: rgba(17, 17, 17, 0.2);
+  }
+
+  .vs-top {
+    margin: 0 -4px 6px 0;
+  }
+
+  .vs-pi {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+    row-gap: 2px;
+  }
+
+  .vs-cat {
+    display: none;
+  }
+
+  .vs-name {
+    flex-basis: 100%;
+    font-size: 17px;
+  }
+
+  .vs-price {
+    margin-top: 2px !important;
+  }
+
+  .vs-more {
+    margin: 0 0 0 auto;
+  }
+
+  .vs-gal {
+    margin-top: 10px;
+    gap: 5px;
+  }
+
+  .vs-th {
+    width: 40px;
+    height: 46px;
+  }
+
+  .vs-opt {
+    margin-top: 12px;
+  }
+
+  .vs-opt-top {
+    margin-bottom: 6px;
+  }
+
+  .vs-vals:not(.is-sw) {
+    grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  }
+
+  .vs-vals button {
+    height: 34px;
+  }
+
+  .vs-buy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .vs-buy .vs-qty {
+    margin: 0;
+  }
+
+  .vs-buy .vs-qty > span {
+    display: none;
+  }
+
+  .vs .vs-buy .vs-add {
+    flex: 1;
+    margin: 0;
+    height: 44px;
+  }
+
+  .vs-view {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .vs-view.is-on {
+    display: block;
+  }
+
+  .vs-zp,
+  .vs-zn {
+    top: auto;
+    bottom: 16px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 760px) and (max-height: 760px) {
+  .vs-panel {
+    padding-bottom: 10px;
+  }
+  .vs-name {
+    font-size: 16px;
+  }
+  .vs-th {
+    width: 34px;
+    height: 40px;
+  }
+  .vs-vals.is-sw button {
+    width: 30px;
+    height: 30px;
+  }
+  .vs-vals button {
+    height: 32px;
+  }
+  .vs .vs-buy .vs-add {
+    height: 40px;
+  }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-canvas,
+  .vs-panel,
+  .vs-caption,
+  .vs-hint,
+  .vs-menu {
+    transition: none !important;
+  }
+  .vs-landed {
+    animation: none !important;
+  }
+}
